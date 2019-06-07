@@ -61,7 +61,7 @@ app.post("/api/setURL", (req, res, next) => {
             client.expire(uuid, req.body.expire);
           }
 
-          res.json({ "url": "http://" + req.get('host') + config.server.port + "/" + uuid });
+          res.json({ "url": "http://" + req.get('host') + "/" + uuid });
         }
       });
     } else {
