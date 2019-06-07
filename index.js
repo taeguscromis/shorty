@@ -1,6 +1,7 @@
 const bodyParser = require("body-parser");
 const express = require("express");
 const shortid = require("shortid");
+const config = require('./config.json');
 const redis = require('redis');
 
 var client = redis.createClient(); // this creates a new client
@@ -10,7 +11,7 @@ var app = express(); // create express app
 app.use(bodyParser.json());
 
 // start listener
-app.listen(3000, () => {
+app.listen(config.server.port, () => {
   console.log("Server running on port 3000");
 });
 
@@ -60,7 +61,7 @@ app.post("/api/setURL", (req, res, next) => {
             client.expire(uuid, req.body.expire);
           }
 
-          res.json({ "url": "http://" + req.get('host') + app.address().port + "/" + uuid });
+          res.json({ "url": "http://" + req.get('host') + config.server.port + "/" + uuid });
         }
       });
     } else {
