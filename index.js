@@ -49,13 +49,13 @@ function generateNewShortId(counter, callback) {
   });
 }
 
-app.get("/api/getURL", (req, res, next) => {
+app.get("/api/getURL", ipFilter(allowed, { mode: 'allow' }), (req, res, next) => {
   getURLFromHash(req.body.hash, function (hash) {
     res.json({ "url": hash });
   });
 });
 
-app.post("/api/setURL", (req, res, next) => {
+app.post("/api/setURL", ipFilter(allowed, { mode: 'allow' }), (req, res, next) => {
   generateNewShortId(1, function (uuid) {
     if (uuid) {
       client.set(uuid, req.body.url, function (err, dbres) {
@@ -74,7 +74,7 @@ app.post("/api/setURL", (req, res, next) => {
 });
 
 // server the redirect request
-app.use(ipFilter(allowed, { mode: 'allow' }), function (req, res) {
+app.use(function (req, res) {
   if (req.url) {
     getURLFromHash(req.url.substring(1), function (hash) {
       if (hash) {
