@@ -7,7 +7,7 @@ const config = require('./config.json');
 const redis = require('redis');
 
 var client = redis.createClient(); // this creates a new client
-var allowed = ['192.168.0.0/16']; // only allow LAN connections
+var allowed = config.api.allowedIps; // only allow LAN connections
 var app = express(); // create express app
 
 // use the json parser for body
