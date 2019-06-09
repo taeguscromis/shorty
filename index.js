@@ -1,11 +1,13 @@
-const bodyParser = require("body-parser");
+const ipFilter = require('express-ipfilter').IpFilter;
 const vsprintf = require("sprintf-js").vsprintf;
+const bodyParser = require("body-parser");
 const express = require("express");
 const shortid = require("shortid");
 const config = require('./config.json');
 const redis = require('redis');
 
 var client = redis.createClient(); // this creates a new client
+var allowed = ['192.168.0.0/16']; // only allow LAN connections
 var app = express(); // create express app
 
 // use the json parser for body
@@ -72,7 +74,7 @@ app.post("/api/setURL", (req, res, next) => {
 });
 
 // server the redirect request
-app.use(function (req, res) {
+app.use(ipFilter(allowed, { mode: 'allow' }), function (req, res) {
   if (req.url) {
     getURLFromHash(req.url.substring(1), function (hash) {
       if (hash) {
@@ -81,5 +83,18 @@ app.use(function (req, res) {
         res.status(404).send('Not found');
       }
     });
+  } else {
+    res.status(500).send('Internal server error!');
+  }
+});
+
+// handle all possible errors
+app.use(function (err, req, res, next) {
+  console.error(err.stack);
+
+  if (err.name == "IpDeniedError") {
+    res.status(403).send('You shall not pass!')
+  } else {
+    res.status(500).send('Internal server error!');
   }
 });
