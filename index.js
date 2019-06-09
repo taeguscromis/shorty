@@ -7,8 +7,14 @@ const config = require('./config.json');
 const redis = require('redis');
 
 var client = redis.createClient(); // this creates a new client
-var allowed = config.api.allowedIps; // only allow LAN connections
 var app = express(); // create express app
+var allowed = [];
+
+if (config.api && config.api.allowedIps) {
+  allowed = config.api.allowedIps; // only allow connections from config
+} else {
+  allowed = ["::ffff:0.0.0.0/0"]; // allow all connections
+}
 
 // use the json parser for body
 app.use(bodyParser.json());
@@ -84,7 +90,7 @@ app.use(function (req, res) {
       }
     });
   } else {
-    res.status(500).send('Internal server error!');
+    res.status(500).send('Internal server error');
   }
 });
 
@@ -93,8 +99,8 @@ app.use(function (err, req, res, next) {
   console.error(err.stack);
 
   if (err.name == "IpDeniedError") {
-    res.status(403).send('You shall not pass!')
+    res.status(404).send('Resource does not exist');
   } else {
-    res.status(500).send('Internal server error!');
+    res.status(500).send('Internal server error');
   }
 });
