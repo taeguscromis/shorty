@@ -1,11 +1,13 @@
 const ipFilter = require('express-ipfilter').IpFilter;
 const vsprintf = require("sprintf-js").vsprintf;
 const bodyParser = require("body-parser");
+const jsonfile = require('jsonfile');
 const express = require("express");
 const shortid = require("shortid");
-const config = require('./config.json');
 const redis = require('redis');
+const path = require('path');
 
+var config = jsonfile.readFileSync(path.join(path.dirname(require.main.filename), 'config.json'));
 var client = redis.createClient(); // this creates a new client
 var app = express(); // create express app
 var allowed = [];
