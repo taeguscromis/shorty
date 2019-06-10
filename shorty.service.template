@@ -3,12 +3,13 @@ Description=URL shortening service
 
 [Service]
 Type=simple
-# Another Type option: forking
-User={user}
-WorkingDirectory={workDir}
 ExecStart={execPath}
 Restart=always
 RestartSec=3
+# Output to syslog
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier={indentifier}
 
 [Install]
 WantedBy=multi-user.target
