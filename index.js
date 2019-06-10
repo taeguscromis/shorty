@@ -64,7 +64,7 @@ app.get("/api/getURL", ipFilter(allowed, { mode: 'allow' }), (req, res, next) =>
       res.json({ "url": hash });
     });
   } else {
-    res.status(403).send('Not allowed!');
+    res.status(404).send('Not found');
   }
 });
 
@@ -86,7 +86,7 @@ app.post("/api/setURL", ipFilter(allowed, { mode: 'allow' }), (req, res, next) =
       }
     });
   } else {
-    res.status(403).send('Not allowed!');
+    res.status(404).send('Not found');
   }
 });
 
