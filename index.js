@@ -58,27 +58,35 @@ function generateNewShortId(counter, callback) {
 }
 
 app.get("/api/getURL", ipFilter(allowed, { mode: 'allow' }), (req, res, next) => {
-  getURLFromHash(req.body.hash, function (hash) {
-    res.json({ "url": hash });
-  });
+  if (req.header('apiKey') == "437e4f66-fcc2-4f55-8394-f3d1e36e72b6") {
+    getURLFromHash(req.body.hash, function (hash) {
+      res.json({ "url": hash });
+    });
+  } else {
+    res.status(403).send('Not allowed!');
+  }
 });
 
 app.post("/api/setURL", ipFilter(allowed, { mode: 'allow' }), (req, res, next) => {
-  generateNewShortId(1, function (uuid) {
-    if (uuid) {
-      client.set(uuid, req.body.url, function (err, dbres) {
-        if (dbres) {
-          if (req.body.expire) {
-            client.expire(uuid, req.body.expire);
-          }
+  if (req.header('apiKey') == "437e4f66-fcc2-4f55-8394-f3d1e36e72b6") {
+    generateNewShortId(1, function (uuid) {
+      if (uuid) {
+        client.set(uuid, req.body.url, function (err, dbres) {
+          if (dbres) {
+            if (req.body.expire) {
+              client.expire(uuid, req.body.expire);
+            }
 
-          res.json({ "url": vsprintf("http://%s/%s", [req.get('host'), uuid]) });
-        }
-      });
-    } else {
-      res.status(500);
-    }
-  });
+            res.json({ "url": vsprintf("http://%s/%s", [req.get('host'), uuid]) });
+          }
+        });
+      } else {
+        res.status(500);
+      }
+    });
+  } else {
+    res.status(403).send('Not allowed!');
+  }
 });
 
 // server the redirect request
