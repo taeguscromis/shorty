@@ -59,7 +59,7 @@ function generateNewShortId(counter, callback) {
 }
 
 app.get("/api/getURL", ipFilter(allowed, { mode: 'allow' }), (req, res, next) => {
-  if (crypto.createHash('md5').update(req.header('apiKey')).digest("hex") == "1ae80eea2d1fb4d5f4c60f511e6e180c") {
+  if ((req.header('apiKey')) && (crypto.createHash('md5').update(req.header('apiKey')).digest("hex") == "1ae80eea2d1fb4d5f4c60f511e6e180c")) {
     getURLFromHash(req.body.hash, function (hash) {
       res.json({ "url": hash });
     });
@@ -69,7 +69,7 @@ app.get("/api/getURL", ipFilter(allowed, { mode: 'allow' }), (req, res, next) =>
 });
 
 app.post("/api/setURL", ipFilter(allowed, { mode: 'allow' }), (req, res, next) => {
-  if (crypto.createHash('md5').update(req.header('apiKey')).digest("hex") == "1ae80eea2d1fb4d5f4c60f511e6e180c") {
+  if ((req.header('apiKey')) && (crypto.createHash('md5').update(req.header('apiKey')).digest("hex") == "1ae80eea2d1fb4d5f4c60f511e6e180c")) {
     generateNewShortId(1, function (uuid) {
       if (uuid) {
         client.set(uuid, req.body.url, function (err, dbres) {
