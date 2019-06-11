@@ -42,7 +42,32 @@ The response in case of success (200) looks like this:
 ```
 {
   url: "https://www.short.com/t8HLbMMGE
+  uuid: t8HLbMMGE
 }
 ```
 
 Currently there is no support for multiple URLs in one single API call.
+
+### getURL
+
+This API takes a short ID and returns the associated url data if any is found. Its a GET request.
+
+```
+**GET**: /api/setURL/:uuid
+```
+
+If it finds the data it returns something like this
+
+```
+{
+    "url": "https://www.google.com"
+}
+```
+
+If nothing is found it returns
+
+```
+{
+    "url": null
+}
+```
