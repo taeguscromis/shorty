@@ -60,8 +60,8 @@ function generateNewShortId(counter, callback) {
 
 app.get("/api/getURL", ipFilter(allowed, { mode: 'allow' }), (req, res, next) => {
   if ((req.header('apiKey')) && (crypto.createHash('md5').update(req.header('apiKey')).digest("hex") == "1ae80eea2d1fb4d5f4c60f511e6e180c")) {
-    getURLFromHash(req.body.hash, function (hash) {
-      res.json({ "url": hash });
+    getURLFromHash(req.body.uuid, function (data) {
+      res.json({ "url": data });
     });
   } else {
     res.status(404).send('Not found');
