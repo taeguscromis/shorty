@@ -58,10 +58,12 @@ function generateNewShortId(counter, callback) {
   });
 }
 
-app.get("/api/getURL", ipFilter(allowed, { mode: 'allow' }), (req, res, next) => {
+app.get("/api/getURL/:uuid", ipFilter(allowed, { mode: 'allow' }), (req, res, next) => {
   if ((req.header('apiKey')) && (crypto.createHash('md5').update(req.header('apiKey')).digest("hex") == "1ae80eea2d1fb4d5f4c60f511e6e180c")) {
-    getURLFromHash(req.body.uuid, function (data) {
-      res.json({ "url": data });
+    getURLFromHash(req.params.uuid, function (data) {
+      res.json({
+        "url": data
+      });
     });
   } else {
     res.status(404).send('Not found');
@@ -78,7 +80,10 @@ app.post("/api/setURL", ipFilter(allowed, { mode: 'allow' }), (req, res, next) =
               client.expire(uuid, req.body.expire);
             }
 
-            res.json({ "url": vsprintf("http://%s/%s", [req.get('host'), uuid]) });
+            res.json({
+              "url": vsprintf("http://%s/%s", [req.get('host'), uuid]),
+              "uuid": uuid
+            });
           }
         });
       } else {
