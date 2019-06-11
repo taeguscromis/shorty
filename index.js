@@ -1,4 +1,3 @@
-const ipFilter = require('express-ipfilter').IpFilter;
 const vsprintf = require("sprintf-js").vsprintf;
 const bodyParser = require("body-parser");
 const jsonfile = require('jsonfile');
@@ -11,13 +10,6 @@ const path = require('path');
 var config = jsonfile.readFileSync(path.join(path.dirname(require.main.filename), 'config.json'));
 var client = redis.createClient(); // this creates a new client
 var app = express(); // create express app
-var allowed = [];
-
-if (config.api && config.api.allowedIps) {
-  allowed = config.api.allowedIps; // only allow connections from config
-} else {
-  allowed = ["::ffff:0.0.0.0/0"]; // allow all connections
-}
 
 // set the Ids seed
 shortid.seed(82594);
@@ -60,7 +52,7 @@ function generateNewShortId(counter, callback) {
   });
 }
 
-app.get("/api/getURL/:uuid", ipFilter(allowed, { mode: 'allow' }), (req, res, next) => {
+app.get("/api/getURL/:uuid", (req, res, next) => {
   if ((req.header('apiKey')) && (crypto.createHash('md5').update(req.header('apiKey')).digest("hex") == "1ae80eea2d1fb4d5f4c60f511e6e180c")) {
     getURLFromHash(req.params.uuid, function (data) {
       res.json({
@@ -72,7 +64,7 @@ app.get("/api/getURL/:uuid", ipFilter(allowed, { mode: 'allow' }), (req, res, ne
   }
 });
 
-app.post("/api/setURL", ipFilter(allowed, { mode: 'allow' }), (req, res, next) => {
+app.post("/api/setURL", (req, res, next) => {
   if ((req.header('apiKey')) && (crypto.createHash('md5').update(req.header('apiKey')).digest("hex") == "1ae80eea2d1fb4d5f4c60f511e6e180c")) {
     generateNewShortId(1, function (uuid) {
       if (uuid) {
