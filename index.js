@@ -19,6 +19,8 @@ if (config.api && config.api.allowedIps) {
   allowed = ["::ffff:0.0.0.0/0"]; // allow all connections
 }
 
+// set the Ids seed
+shortid.seed(82594);
 // use the json parser for body
 app.use(bodyParser.json());
 
