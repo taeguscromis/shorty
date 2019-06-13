@@ -55,7 +55,7 @@ function generateNewShortId(counter, callback) {
 app.get("/api/getURL/:uuid", (req, res, next) => {
   if ((req.header('apiKey')) && (crypto.createHash('md5').update(req.header('apiKey')).digest("hex") == "1ae80eea2d1fb4d5f4c60f511e6e180c")) {
     getURLFromHash(req.params.uuid, function (data) {
-      res.json({
+      res.send({
         "url": data
       });
     });
@@ -74,7 +74,7 @@ app.post("/api/setURL", (req, res, next) => {
               client.expire(uuid, req.body.expire);
             }
 
-            res.json({
+            res.send({
               "url": vsprintf("http://%s/%s", [req.get('host'), uuid]),
               "uuid": uuid
             });
