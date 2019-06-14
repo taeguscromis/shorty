@@ -8,6 +8,7 @@ const redis = require('redis');
 const path = require('path');
 
 var config = jsonfile.readFileSync(path.join(path.dirname(require.main.filename), 'config.json'));
+var protocol = config.url.protocol; // read the protocol for the responses
 var client = redis.createClient(); // this creates a new client
 var app = express(); // create express app
 
@@ -75,7 +76,7 @@ app.post("/api/setURL", (req, res, next) => {
             }
 
             res.send({
-              "url": vsprintf("%s://%s/%s", [req.protocol, req.get('host'), uuid]),
+              "url": vsprintf("%s://%s/%s", [protocol, req.get('host'), uuid]),
               "uuid": uuid
             });
           }
