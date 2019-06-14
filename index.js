@@ -75,7 +75,7 @@ app.post("/api/setURL", (req, res, next) => {
             }
 
             res.send({
-              "url": vsprintf("http://%s/%s", [req.get('host'), uuid]),
+              "url": vsprintf("%s://%s/%s", [req.protocol, req.get('host'), uuid]),
               "uuid": uuid
             });
           }
