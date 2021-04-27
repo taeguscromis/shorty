@@ -13,7 +13,7 @@
     "express": "^4.16.4",
     "express-ipfilter": "^1.0.1",
     "jsonfile": "^5.0.0",
-    "redis": "^2.8.0",
+    "redis": "^3.1.1",
     "shortid": "^2.2.14",
     "sprintf-js": "^1.1.2"
   },
